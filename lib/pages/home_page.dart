@@ -13,6 +13,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final amountController = TextEditingController();
+  bool _isLoading = true;
 
   void addWater() {
     showDialog(
@@ -80,10 +81,26 @@ class _HomePageState extends State<HomePage> {
     amountController.clear();
   }
 
+  void _loadData() async {
+    Provider.of<WaterData>(context, listen: false)
+        .getWaterData()
+        .then((waters) {
+      if (waters.isNotEmpty) {
+        setState(() {
+          _isLoading = false;
+        });
+      } else {
+        setState(() {
+          _isLoading = true;
+        });
+      }
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
-    Provider.of<WaterData>(context, listen: false).getWaterData();
+    _loadData();
     super.initState();
   }
 
@@ -105,11 +122,13 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
-        body: ListView.builder(
-            itemCount: value.waterDataList.length,
-            itemBuilder: (context, index) {
-              return WaterTile(waterModel: value.waterDataList[index]);
-            }),
+        body: (!_isLoading)
+            ? ListView.builder(
+                itemCount: value.waterDataList.length,
+                itemBuilder: (context, index) {
+                  return WaterTile(waterModel: value.waterDataList[index]);
+                })
+            : const Center(child: RefreshProgressIndicator()),
         floatingActionButton: FloatingActionButton(
           onPressed: addWater,
           child: const Icon(Icons.add),
