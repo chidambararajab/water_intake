@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:water_intake/componenets/water_tile.dart';
 import 'package:water_intake/data/water_data.dart';
 import 'package:water_intake/models/water_model.dart';
 
@@ -101,11 +102,7 @@ class _HomePageState extends State<HomePage> {
         body: ListView.builder(
             itemCount: value.waterDataList.length,
             itemBuilder: (context, index) {
-              WaterModel data = value.waterDataList[index];
-              return ListTile(
-                title: Text(data.amount.toString()),
-                subtitle: Text(data.id!),
-              );
+              return WaterTile(waterModel: value.waterDataList[index]);
             }),
         floatingActionButton: FloatingActionButton(
           onPressed: addWater,

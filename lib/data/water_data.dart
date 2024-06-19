@@ -50,7 +50,7 @@ class WaterData extends ChangeNotifier {
 
       var response = await http.get(url);
 
-      if (response.statusCode == 200 && response.body.isNotEmpty) {
+      if (response.statusCode == 200 && response.body != 'null') {
         waterDataList.clear();
 
         var extractedData = json.decode(response.body) as Map<String, dynamic>;
@@ -63,8 +63,27 @@ class WaterData extends ChangeNotifier {
         return [];
       }
     } catch (e) {
-      print("error: $e");
+      print("error getWaterData: $e");
       return [];
     }
+  }
+
+  Future<int> deleteWaterData(String id) async {
+    final url = Uri.https(
+      'water-intaker-ecb31-default-rtdb.firebaseio.com',
+      'water/$id.json',
+    );
+
+    var response = await http.delete(url);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      waterDataList.removeWhere((e) => e.id == id);
+    } else {
+      print("error: ${response.statusCode}");
+    }
+
+    notifyListeners();
+
+    return response.statusCode;
   }
 }
