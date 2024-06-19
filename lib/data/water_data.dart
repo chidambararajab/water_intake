@@ -55,8 +55,7 @@ class WaterData extends ChangeNotifier {
 
         var extractedData = json.decode(response.body) as Map<String, dynamic>;
         waterDataList = extractedData.entries
-            .map<WaterModel>(
-                (e) => WaterModel.fromJson(e.value, DateTime.now().toString()))
+            .map<WaterModel>((e) => WaterModel.fromJson(e.value, e.key))
             .toList();
         notifyListeners();
         return waterDataList;
