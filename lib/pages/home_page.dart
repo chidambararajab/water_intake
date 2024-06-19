@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:water_intake/data/water_data.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -83,28 +85,30 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Water Intake'),
-        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: IconButton(
-              icon: const Icon(Icons.water_drop_outlined),
-              onPressed: () {},
-            ),
-          )
-        ],
-      ),
-      backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
-      body: const Center(
-        child: Text('Hello World!'),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: addWater,
-        child: const Icon(Icons.add),
-      ),
-    );
+    return Consumer<WaterData>(builder: (context, value, child) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Water Intake'),
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: IconButton(
+                icon: const Icon(Icons.water_drop_outlined),
+                onPressed: () {},
+              ),
+            )
+          ],
+        ),
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
+        body: const Center(
+          child: Text('Hello World!'),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: addWater,
+          child: const Icon(Icons.add),
+        ),
+      );
+    });
   }
 }
