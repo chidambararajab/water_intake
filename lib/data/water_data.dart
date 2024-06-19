@@ -31,6 +31,8 @@ class WaterData extends ChangeNotifier {
           dateTime: water.dateTime,
           unit: water.unit,
         ));
+      } else {
+        print("error: ${response.statusCode}");
       }
 
       notifyListeners();

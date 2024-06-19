@@ -74,6 +74,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    Provider.of<WaterData>(context, listen: false).getWaterData();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer<WaterData>(builder: (context, value, child) {
       return Scaffold(
@@ -91,27 +98,15 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
-        body: FutureBuilder<List<WaterModel>>(
-          future: WaterData().getWaterData(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text('No books found.'));
-            } else {
-              return ListView.builder(
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (context, index) {
-                    WaterModel data = snapshot.data![index];
-                    return ListTile(
-                      title: Text(data.amount.toString()),
-                    );
-                  });
-            }
-          },
-        ),
+        body: ListView.builder(
+            itemCount: value.waterDataList.length,
+            itemBuilder: (context, index) {
+              WaterModel data = value.waterDataList[index];
+              return ListTile(
+                title: Text(data.amount.toString()),
+                subtitle: Text(data.id!),
+              );
+            }),
         floatingActionButton: FloatingActionButton(
           onPressed: addWater,
           child: const Icon(Icons.add),
