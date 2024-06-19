@@ -12,7 +12,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final amountController = TextEditingController(text: "10");
+  final amountController = TextEditingController();
 
   void addWater() {
     showDialog(
@@ -72,6 +72,12 @@ class _HomePageState extends State<HomePage> {
       // ? Reason: We want to do this because since we're inside of an async await function, the widget might be disposed before the await function is done doing its job. so we need to check if the widget is still mounted before we do anything. Otherwise we end up getting an error.
       return; // ? Reason: if widget not mounted don't do anything.
     }
+
+    clearWater();
+  }
+
+  void clearWater() {
+    amountController.clear();
   }
 
   @override
