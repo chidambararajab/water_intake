@@ -1,9 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:water_intake/data/water_data.dart';
+import 'package:water_intake/models/water_model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,31 +12,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final amountController = TextEditingController(text: "10");
-
-  void saveWater(String amount) async {
-    final url = Uri.https(
-      'water-intaker-ecb31-default-rtdb.firebaseio.com',
-      'water.json',
-    );
-
-    var response = await http.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: json.encode({
-        'amount': double.parse(amount),
-        'unit': 'ml',
-        'dateTime': DateTime.now().toString(),
-      }),
-    );
-
-    if (response.statusCode >= 200) {
-      print('Data Saved');
-    } else {
-      print('Data Not Saved');
-    }
-  }
 
   void addWater() {
     showDialog(
@@ -73,7 +46,8 @@ class _HomePageState extends State<HomePage> {
               ),
               TextButton(
                 onPressed: () {
-                  saveWater(amountController.text);
+                  saveWater();
+                  setState(() {});
                   Navigator.pop(context);
                 },
                 child: const Text('Save'),
@@ -81,6 +55,22 @@ class _HomePageState extends State<HomePage> {
             ],
           );
         });
+  }
+
+  void saveWater() async {
+    Provider.of<WaterData>(context, listen: false).addWaterData(
+      WaterModel(
+        amount: double.parse(amountController.text),
+        dateTime: DateTime.now(),
+        id: DateTime.now().toString(),
+        unit: 'ml',
+      ),
+    );
+
+    if (!context.mounted) {
+      // ? Reason: We want to do this because since we're inside of an async await function, the widget might be disposed before the await function is done doing its job. so we need to check if the widget is still mounted before we do anything. Otherwise we end up getting an error.
+      return; // ? Reason: if widget not mounted don't do anything.
+    }
   }
 
   @override
@@ -101,8 +91,26 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
-        body: const Center(
-          child: Text('Hello World!'),
+        body: FutureBuilder<List<WaterModel>>(
+          future: WaterData().getWaterData(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(child: Text('No books found.'));
+            } else {
+              return ListView.builder(
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    WaterModel data = snapshot.data![index];
+                    return ListTile(
+                      title: Text(data.amount.toString()),
+                    );
+                  });
+            }
+          },
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: addWater,

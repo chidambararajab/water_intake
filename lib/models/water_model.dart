@@ -2,13 +2,13 @@ class WaterModel {
   final String? id;
   final double amount;
   final DateTime dateTime;
-  // final String unit;
+  final String unit;
 
   WaterModel({
     this.id,
     required this.amount,
     required this.dateTime,
-    required String unit,
+    required this.unit,
   });
 
   factory WaterModel.fromJson(Map<String, dynamic> json, String id) {
@@ -24,6 +24,7 @@ class WaterModel {
     return {
       'amount': amount,
       'dateTime': dateTime.toString(),
+      'unit': unit,
     };
   }
 }
