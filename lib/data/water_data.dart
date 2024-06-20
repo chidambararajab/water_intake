@@ -123,9 +123,7 @@ class WaterData extends ChangeNotifier {
   String calculateWeeklyWaterIntake(WaterData value) {
     double weeklyWaterIntake = 0;
     for (var water in value.waterDataList) {
-      if (water.dateTime.weekday == DateTime.now().weekday) {
-        weeklyWaterIntake += double.parse(water.amount.toString());
-      }
+      weeklyWaterIntake += double.parse(water.amount.toString());
     }
     return weeklyWaterIntake
         .toStringAsFixed(2); // Return weekly Water Intake with 2 decimal point.
