@@ -112,7 +112,21 @@ class _HomePageState extends State<HomePage> {
           double.parse(value.calculateWeeklyWaterIntake(value).toString());
       return Scaffold(
         appBar: AppBar(
-          title: Text('Intake $totalAmount ml'),
+          title: Row(
+            children: [
+              Text(
+                'Intake: ',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              Text(
+                '$totalAmount ml',
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+            ],
+          ),
           backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           actions: [
             Padding(
