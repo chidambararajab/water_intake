@@ -108,9 +108,11 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Consumer<WaterData>(builder: (context, value, child) {
+      double totalAmount =
+          double.parse(value.calculateWeeklyWaterIntake(value).toString());
       return Scaffold(
         appBar: AppBar(
-          title: const Text('Water Intake'),
+          title: Text('Intake $totalAmount ml'),
           backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           actions: [
             Padding(
